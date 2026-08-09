@@ -4,6 +4,9 @@ namespace Database\Seeders;
 
 use App\Models\Weapon;
 use App\Models\Enemy;
+use App\Models\ArmorPiece;
+use App\Models\Accessory;
+use App\Models\Ammo;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -52,6 +55,65 @@ class DatabaseSeeder extends Seeder
             'base_defense' => 2,
             'debuff_immunities' => ['Poisoned', 'Bleeding', 'Hemorrhage'],
             'bestiary_id' => 1,
+        ]);
+
+        Enemy::create([
+            'name' => 'Eye Of Cthulhu',
+            'base_defense' => 12,
+            'debuff_immunities' => ['Confused'],
+            'bestiary_id' => 2,
+        ]);
+
+        Ammo::create([
+            'name' => 'Musket Ball',
+            'ammo_type' => 'Bullet',
+            'damage' => 7,
+            'armor_penetration' => 0
+        ]);
+
+        Ammo::create([
+            'name' => 'Silver Bullet',
+            'ammo_type' => 'Bullet',
+            'damage' => 9,
+            'armor_penetration' => 0
+        ]);
+
+        Accessory::create([
+            'name' => 'Shark Tooth Necklace',
+            'description' => 'Increases armor penetration by 5',
+            'stat_bonuses' => ['armor_penetration' => 5]
+        ]);
+
+        Accessory::create([
+            'name' => 'Ranger Emblem',
+            'description' => '15% increased ranged damage',
+            'stat_bonuses' => ['ranged_damage' => 0.15]
+        ]);
+
+        ArmorPiece::create([
+            'name' => 'Necro Helmet',
+            'slot' => 'Head',
+            'defense' => 5,
+            'stat_bonuses' => ['ranged_crit' => 5],
+            'set_family' => 'Necro',
+            'set_bonus_description' => '10% increased ranged damage',
+            'set_bonus_stats' => ['ranged_damage' => 0.10]
+        ]);
+
+        ArmorPiece::create([
+            'name' => 'Necro Breastplate',
+            'slot' => 'Body',
+            'defense' => 6,
+            'stat_bonuses' => ['ranged_damage' => 0.05],
+            'set_family' => 'Necro'
+        ]);
+
+        ArmorPiece::create([
+            'name' => 'Necro Greaves',
+            'slot' => 'Legs',
+            'defense' => 5,
+            'stat_bonuses' => ['ranged_damage' => 0.05],
+            'set_family' => 'Necro'
         ]);
     }
 }

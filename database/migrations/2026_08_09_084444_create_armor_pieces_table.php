@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('armor_pieces', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('armor_type', ['Head', 'Body', 'Legs']);
+            $table->string('slot');
             $table->integer('defense')->default(0);
             $table->json('stat_bonuses')->nullable();
 
