@@ -23,9 +23,6 @@
                 <div class="text-gray-400">Base Defense:</div>
                 <div class="text-right font-medium text-white">{{ selected.base_defense }}</div>
 
-                <div class="text-gray-400">Damage Reduction:</div>
-                <div class="text-right font-medium text-white">{{ (selected.damage_reduction * 100).toFixed(1) }}%</div>
-
                 <div class="text-gray-400 col-span-2 mt-2">Immunities:</div>
                 <div class="col-span-2 flex flex-wrap gap-1">
                     <span
