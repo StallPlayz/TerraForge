@@ -16,7 +16,6 @@ return new class extends Migration
 
             $table->string('name');
             $table->integer('base_defense');
-            $table->decimal('damage_reduction', 5, 4)->default(0);
             $table->json('debuff_immunities')->nullable();
             
             $table->integer('bestiary_id')->nullable()->unique();

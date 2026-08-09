@@ -30,11 +30,27 @@ class DatabaseSeeder extends Seeder
             'reuse_delay' => 0,
         ]);
 
+        Weapon::create([
+            'name' => 'Minishark',
+            'base_damage' => 6,
+            'damage_type' => 'Ranged',
+            'use_ammo_type' => 'Bullet',
+            'projectile_count' => 1,
+            'base_crit_chance' => 4,
+            'armor_penetration' => 0,
+            'use_time' => 8,
+            'use_animation' => 8,
+            'auto_reuse' => true,
+            'mana_cost' => 0,
+            'melee_speed_application' => 'None',
+            'is_true_melee' => false,
+            'reuse_delay' => 0,
+        ]);
+
         Enemy::create([
             'name' => 'Blue Slime',
             'base_defense' => 2,
-            'damage_reduction' => 0.0000, 
-            'debuff_immunities' => ['Poisoned'],
+            'debuff_immunities' => ['Poisoned', 'Bleeding', 'Hemorrhage'],
             'bestiary_id' => 1,
         ]);
     }

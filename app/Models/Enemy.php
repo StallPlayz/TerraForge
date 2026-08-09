@@ -17,7 +17,6 @@ class Enemy extends Model
         protected $fillable = [
         'name',
         'base_defense',
-        'damage_reduction',
         'debuff_immunities',
         'bestiary_id',
         ];
@@ -29,7 +28,6 @@ class Enemy extends Model
      */
         protected $casts = [
         'base_defense' => 'integer',
-        'damage_reduction' => 'float',
         'debuff_immunities' => 'array',
         'bestiary_id' => 'integer',
         ];
