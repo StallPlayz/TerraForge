@@ -24,8 +24,6 @@
         <!-- TAB CONTENT: WEAPONS -->
         <div v-if="activeTab === 'weapons'" class="rounded-b-lg rounded-tr-lg border border-gray-800 bg-[#1a1a1a] p-6 shadow-xl">
             <form @submit.prevent="submitWeapon" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                
-                <!-- String/Enum Inputs -->
                 <div class="col-span-1 md:col-span-2 lg:col-span-3"><h3 class="border-b border-gray-800 pb-2 text-lg font-semibold text-gray-300">Identity</h3></div>
                 
                 <div>
@@ -42,10 +40,7 @@
                     <label class="mb-1 block text-xs font-medium text-gray-400">Use Ammo Type (Optional)</label>
                     <input v-model="weaponForm.use_ammo_type" type="text" placeholder="e.g., Bullet, Arrow" class="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-white placeholder-gray-600">
                 </div>
-
-                <!-- Combat Stats -->
                 <div class="col-span-1 mt-4 md:col-span-2 lg:col-span-3"><h3 class="border-b border-gray-800 pb-2 text-lg font-semibold text-gray-300">Combat Stats</h3></div>
-
                 <div>
                     <label class="mb-1 block text-xs font-medium text-gray-400">Base Damage</label>
                     <input v-model="weaponForm.base_damage" type="number" class="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-white" required>
@@ -58,10 +53,7 @@
                     <label class="mb-1 block text-xs font-medium text-gray-400">Armor Penetration</label>
                     <input v-model="weaponForm.armor_penetration" type="number" class="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-white" required>
                 </div>
-
-                <!-- Timing & Mechanics -->
                 <div class="col-span-1 mt-4 md:col-span-2 lg:col-span-3"><h3 class="border-b border-gray-800 pb-2 text-lg font-semibold text-gray-300">Timing & Engine Mechanics</h3></div>
-
                 <div>
                     <label class="mb-1 block text-xs font-medium text-gray-400">Use Time (Ticks)</label>
                     <input v-model="weaponForm.use_time" type="number" class="w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-white" required>
@@ -78,14 +70,10 @@
                     <input v-model="weaponForm.is_true_melee" type="checkbox" id="trueMelee" class="h-5 w-5 rounded border-gray-700 bg-gray-900 text-teal-500 focus:ring-teal-500 focus:ring-offset-gray-900">
                     <label for="trueMelee" class="text-sm font-medium text-gray-400">Is True Melee</label>
                 </div>
-
-                <!-- Hidden/Default Values for the DB -->
                 <input v-model="weaponForm.projectile_count" type="hidden">
                 <input v-model="weaponForm.mana_cost" type="hidden">
                 <input v-model="weaponForm.reuse_delay" type="hidden">
                 <input v-model="weaponForm.melee_speed_application" type="hidden">
-
-                <!-- Submit -->
                 <div class="col-span-1 mt-6 md:col-span-2 lg:col-span-3">
                     <button type="submit" :disabled="weaponForm.processing" class="w-full rounded bg-teal-600 py-3 font-bold text-white transition hover:bg-teal-500 disabled:opacity-50">
                         {{ weaponForm.processing ? 'Forging Weapon...' : 'Forge Weapon ->' }}
@@ -227,7 +215,8 @@ const tabs = [
 ];
 const activeTab = ref('weapons');
 
-// --- FORMS ---
+// === FORMS ===
+
 const weaponForm = useForm({
     name: '', damage_type: 'Melee', use_ammo_type: null, base_damage: 0, base_crit_chance: 4, 
     armor_penetration: 0, use_time: 20, use_animation: 20, auto_reuse: false, is_true_melee: true,
@@ -252,7 +241,8 @@ const ammoForm = useForm({
     name: '', ammo_type: 'Bullet', damage: 0, armor_penetration: 0
 });
 
-// --- SUBMIT HANDLERS ---
+// === SUBMIT HANDLERS ===
+
 const submitWeapon = () => { weaponForm.post('/weapons', { preserveScroll: true, onSuccess: () => weaponForm.reset() }); };
 const submitEnemy = () => { enemyForm.post('/enemies', { preserveScroll: true, onSuccess: () => enemyForm.reset() }); };
 

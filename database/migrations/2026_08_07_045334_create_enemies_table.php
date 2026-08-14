@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->integer('base_defense');
             $table->json('debuff_immunities')->nullable();
-            
+
             $table->integer('bestiary_id')->nullable()->unique();
 
             $table->timestamps();

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Build;
-use Illuminate\Http\Request;
 
 class BuildController extends Controller
 {
@@ -13,7 +12,7 @@ class BuildController extends Controller
     public function index()
     {
         $builds = Build::all();
-        
+
         return response()->json($builds);
     }
 }

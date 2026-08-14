@@ -11,24 +11,24 @@ class Enemy extends Model
 
     /**
      * The attributes that are mass assignable.
-     * 
+     *
      * @var array
      */
-        protected $fillable = [
+    protected $fillable = [
         'name',
         'base_defense',
         'debuff_immunities',
         'bestiary_id',
-        ];
+    ];
 
     /**
      * The attributes that should be cast to native types.
-     * 
+     *
      * @var array
      */
-        protected $casts = [
+    protected $casts = [
         'base_defense' => 'integer',
         'debuff_immunities' => 'array',
         'bestiary_id' => 'integer',
-        ];
+    ];
 }

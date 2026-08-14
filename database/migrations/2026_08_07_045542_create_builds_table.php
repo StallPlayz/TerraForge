@@ -15,14 +15,14 @@ return new class extends Migration
             $table->id();
 
             $table->string('name');
-            
+
             $table->integer('max_mana')->default(20);
 
             $table->json('armor_slots')->nullable();
             $table->json('accessory_slots')->nullable();
             $table->json('ammo_slots')->nullable();
             $table->json('active_buffs')->nullable();
-            
+
             $table->timestamps();
         });
     }

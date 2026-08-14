@@ -11,28 +11,28 @@ class Build extends Model
 
     /**
      * The attributes that are mass assignable.
-     * 
+     *
      * @var array
      */
-        protected $fillable = [
+    protected $fillable = [
         'name',
         'max_mana',
         'armor_slots',
         'accessory_slots',
         'ammo_slots',
         'active_buffs',
-        ];
+    ];
 
     /**
      * The attributes that should be cast to native types.
-     * 
+     *
      * @var array
      */
-        protected $casts = [
+    protected $casts = [
         'max_mana' => 'integer',
         'armor_slots' => 'array',
         'accessory_slots' => 'array',
         'ammo_slots' => 'array',
         'active_buffs' => 'array',
-        ];
+    ];
 }

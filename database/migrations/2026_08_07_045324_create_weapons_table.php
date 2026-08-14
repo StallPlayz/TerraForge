@@ -30,7 +30,7 @@ return new class extends Migration
             $table->enum('melee_speed_application', ['None', 'UseTime', 'WhipScale']);
             $table->boolean('is_true_melee')->default(false);
             $table->integer('reuse_delay')->default(0);
-            
+
             $table->timestamps();
         });
     }

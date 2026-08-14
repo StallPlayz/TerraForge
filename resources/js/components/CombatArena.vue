@@ -12,6 +12,18 @@
             <div class="col-span-1 flex flex-col rounded border border-gray-700 bg-gray-800/50 p-4 shadow-inner">
                 <h3 class="mb-3 text-lg font-bold text-red-500 border-b border-gray-700 pb-1">Live Combat</h3>
 
+                <!-- Mana Bar (Permanently visible to anchor UI height and match in-game behavior) -->
+                <div v-if="stats" class="mb-4">
+                    <div class="mb-1 flex justify-between text-xs font-bold text-blue-400">
+                        <span>Mana</span>
+                        <span>{{ Math.floor(currentMana) }} / {{ stats.maxMana }}</span>
+                    </div>
+                    <div class="h-2.5 w-full overflow-hidden rounded-full border border-gray-700 bg-gray-900">
+                        <div class="h-2.5 bg-blue-600 transition-all duration-75"
+                            :style="{ width: `${(currentMana / stats.maxMana) * 100}%` }">
+                        </div>
+                    </div>
+                </div>
                 <div class="grid flex-1 grid-cols-2 gap-y-2 text-sm">
                     <div class="text-gray-400">Total Hits:</div>
                     <div class="text-right font-medium text-white">{{ totalHits }}</div>
@@ -56,8 +68,12 @@
                             No ammo! Ranged weapon requires ammunition to fire.
                         </span>
 
+                        <span v-else-if="log.isNoMana" class="font-bold italic text-blue-500">
+                            Out of mana!
+                        </span>
+
                         <span v-else-if="log.isIframeMiss" class="italic text-gray-600">
-                            Swing missed! <span class="text-red-400">{{ enemy.name }}</span> was invincible.
+                            Attack missed! <span class="text-red-400">{{ enemy.name }}</span> was invincible.
                         </span>
 
                         <span v-else>
@@ -110,6 +126,7 @@ const totalDamage = ref(0);
 const totalHits = ref(0);
 const realDPS = ref("0.0");
 const isCooldown = ref(false);
+const currentMana = ref(200);
 
 let animationFrameId = null;
 let isAutoAttacking = false;
@@ -121,6 +138,26 @@ const DPS_WINDOW_MS = 2000;
 const ENEMY_IFRAME_TICKS = 10;
 const iframeMs = (ENEMY_IFRAME_TICKS / 60) * 1000;
 
+watch(() => props.stats?.maxMana, (newMax, oldMax) => {
+    if (newMax && oldMax) {
+        const difference = newMax - oldMax;
+
+        if (difference > 0) {
+            currentMana.value += difference;
+        }
+        else if (currentMana.value > newMax) {
+            currentMana.value = newMax;
+        }
+    } else if (newMax) {
+        currentMana.value = newMax;
+    }
+});
+
+watch([() => props.weapon, () => props.enemy], () => {
+    clearLog();
+    if (props.stats) currentMana.value = props.stats.maxMana;
+});
+
 const cooldownMs = computed(() => {
     if (!props.weapon) return 0;
     return (props.weapon.use_time / 60) * 1000;
@@ -128,14 +165,12 @@ const cooldownMs = computed(() => {
 
 const effectiveDefense = computed(() => {
     if (!props.weapon || !props.enemy || !props.stats) return 0;
-    // Uses Total Armor Pen
     return Math.max(0, props.enemy.base_defense - props.stats.armorPen);
 });
 
 const baseHitDamage = computed(() => {
     if (!props.weapon || !props.enemy || !props.stats) return 0;
     const defenseReduction = Math.floor(effectiveDefense.value / 2);
-    // Uses Total Damage
     return Math.max(1, props.stats.damage - defenseReduction);
 });
 
@@ -146,7 +181,6 @@ const attacksPerSecond = computed(() => {
 
 const estimatedDPS = computed(() => {
     if (!props.weapon || !props.enemy || !props.stats) return 0;
-    // Uses Total Crit
     const critChance = props.stats.crit / 100;
     const avgDamagePerHit = (baseHitDamage.value * (1 - critChance)) + ((baseHitDamage.value * 2) * critChance);
     return (avgDamagePerHit * attacksPerSecond.value).toFixed(1);
@@ -160,6 +194,11 @@ const gameLoop = (timestamp) => {
         updateRealDPS(timestamp);
         lastDpsUpdateTime = timestamp;
     }
+    if (props.weapon?.damage_type === 'Magic' && props.stats) {
+        if (timestamp - lastStrikeTime > 1000 && currentMana.value < props.stats.maxMana) {
+            currentMana.value = Math.min(props.stats.maxMana, currentMana.value + 2);
+        }
+    }
     animationFrameId = requestAnimationFrame(gameLoop);
 };
 
@@ -168,7 +207,7 @@ const startAttack = () => {
     isAutoAttacking = true;
 
     const now = performance.now();
-    strike(now); // RESTORED: This makes manual weapons swing!
+    strike(now);
 
     if (!animationFrameId) {
         animationFrameId = requestAnimationFrame(gameLoop);
@@ -201,11 +240,6 @@ const updateRealDPS = (now) => {
 
 const strike = (now) => {
     if (!now) now = performance.now();
-    if (now - lastStrikeTime < cooldownMs.value) return;
-
-    lastStrikeTime = now;
-    isCooldown.value = true;
-    setTimeout(() => { isCooldown.value = false; }, cooldownMs.value);
 
     const dateNow = new Date();
     const timestampStr = dateNow.toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' }) + '.' + Math.floor(dateNow.getMilliseconds() / 100);
@@ -216,13 +250,39 @@ const strike = (now) => {
             damage: 0,
             isCrit: false,
             isIframeMiss: false,
-            isNoAmmo: true
+            isNoAmmo: true,
+            isNoMana: false
         });
         return;
     }
 
+    if (props.weapon?.damage_type === 'Magic') {
+        const manaCost = props.weapon.mana_cost || 0;
+        if (currentMana.value < manaCost) {
+            combatLog.value.unshift({
+                time: timestampStr,
+                damage: 0,
+                isCrit: false,
+                isIframeMiss: false,
+                isNoAmmo: false,
+                isNoMana: true
+            });
+            return;
+        }
+    }
+
+    if (now - lastStrikeTime < cooldownMs.value) return;
+
+    if (props.weapon?.damage_type === 'Magic') {
+        currentMana.value -= (props.weapon.mana_cost || 0);
+    }
+
+    lastStrikeTime = now;
+    isCooldown.value = true;
+    setTimeout(() => { isCooldown.value = false; }, cooldownMs.value);
+
     if (now - lastEnemyHitTime < iframeMs) {
-        combatLog.value.unshift({ time: timestampStr, damage: 0, isCrit: false, isIframeMiss: true });
+        combatLog.value.unshift({ time: timestampStr, damage: 0, isCrit: false, isIframeMiss: true, isNoAmmo: false, isNoMana: false });
         return;
     }
 
@@ -238,7 +298,7 @@ const strike = (now) => {
     totalHits.value += 1;
     hitHistory.value.push({ damage: finalDamage, timestamp: now });
 
-    combatLog.value.unshift({ time: timestampStr, damage: finalDamage, isCrit: isCrit, isIframeMiss: false });
+    combatLog.value.unshift({ time: timestampStr, damage: finalDamage, isCrit: isCrit, isIframeMiss: false, isNoAmmo: false, isNoMana: false });
 };
 
 const clearLog = () => {
@@ -251,6 +311,10 @@ const clearLog = () => {
     lastEnemyHitTime = 0;
     isAutoAttacking = false;
 
+    if (props.stats) {
+        currentMana.value = props.stats.maxMana;
+    }
+
     if (animationFrameId) {
         cancelAnimationFrame(animationFrameId);
         animationFrameId = null;
@@ -259,9 +323,5 @@ const clearLog = () => {
 
 onUnmounted(() => {
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
-});
-
-watch([() => props.weapon, () => props.enemy], () => {
-    clearLog();
 });
 </script>

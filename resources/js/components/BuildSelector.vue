@@ -76,7 +76,6 @@ const selected = reactive({
     accessories: [null, null, null, null, null]
 });
 
-// Helper function: filters out accessories already selected in other slots
 const getAvailableAccessories = (currentIndex) => {
     const selectedIds = selected.accessories
         .map((acc, idx) => (idx !== currentIndex && acc ? acc.id : null))

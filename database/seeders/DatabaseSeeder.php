@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use App\Models\Weapon;
-use App\Models\Enemy;
-use App\Models\ArmorPiece;
 use App\Models\Accessory;
 use App\Models\Ammo;
+use App\Models\ArmorPiece;
+use App\Models\Enemy;
+use App\Models\Weapon;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -50,6 +50,23 @@ class DatabaseSeeder extends Seeder
             'reuse_delay' => 0,
         ]);
 
+        Weapon::create([
+            'name' => 'Water Bolt',
+            'base_damage' => 19,
+            'damage_type' => 'Magic',
+            'use_ammo_type' => null,
+            'projectile_count' => 1,
+            'base_crit_chance' => 4,
+            'armor_penetration' => 0,
+            'use_time' => 17,
+            'use_animation' => 17,
+            'auto_reuse' => true,
+            'mana_cost' => 10,
+            'melee_speed_application' => 'None',
+            'is_true_melee' => false,
+            'reuse_delay' => 0,
+        ]);
+
         Enemy::create([
             'name' => 'Blue Slime',
             'base_defense' => 2,
@@ -68,52 +85,84 @@ class DatabaseSeeder extends Seeder
             'name' => 'Musket Ball',
             'ammo_type' => 'Bullet',
             'damage' => 7,
-            'armor_penetration' => 0
+            'armor_penetration' => 0,
         ]);
 
         Ammo::create([
             'name' => 'Silver Bullet',
             'ammo_type' => 'Bullet',
             'damage' => 9,
-            'armor_penetration' => 0
+            'armor_penetration' => 0,
         ]);
 
         Accessory::create([
             'name' => 'Shark Tooth Necklace',
             'description' => 'Increases armor penetration by 5',
-            'stat_bonuses' => ['armor_penetration' => 5]
+            'stat_bonuses' => ['armor_penetration' => 5],
         ]);
 
         Accessory::create([
             'name' => 'Ranger Emblem',
             'description' => '15% increased ranged damage',
-            'stat_bonuses' => ['ranged_damage' => 0.15]
+            'stat_bonuses' => ['ranged_damage' => 0.15],
+        ]);
+
+        Accessory::create([
+            'name' => 'Band of Starpower',
+            'description' => 'Increases maximum mana by 20',
+            'stat_bonuses' => ['max_mana' => 20],
         ]);
 
         ArmorPiece::create([
             'name' => 'Necro Helmet',
             'slot' => 'Head',
-            'defense' => 5,
+            'defense' => 6,
             'stat_bonuses' => ['ranged_crit' => 5],
             'set_family' => 'Necro',
             'set_bonus_description' => '10% increased ranged damage',
-            'set_bonus_stats' => ['ranged_damage' => 0.10]
+            'set_bonus_stats' => ['ranged_damage' => 0.10],
         ]);
 
         ArmorPiece::create([
             'name' => 'Necro Breastplate',
             'slot' => 'Body',
-            'defense' => 6,
+            'defense' => 7,
             'stat_bonuses' => ['ranged_damage' => 0.05],
-            'set_family' => 'Necro'
+            'set_family' => 'Necro',
         ]);
 
         ArmorPiece::create([
             'name' => 'Necro Greaves',
             'slot' => 'Legs',
-            'defense' => 5,
+            'defense' => 6,
             'stat_bonuses' => ['ranged_damage' => 0.05],
-            'set_family' => 'Necro'
+            'set_family' => 'Necro',
+        ]);
+
+        ArmorPiece::create([
+            'name' => 'Jungle Hat',
+            'slot' => 'Head',
+            'defense' => 5,
+            'stat_bonuses' => ['max_mana' => 40, 'magic_crit' => 6],
+            'set_family' => 'jungle',
+            'set_bonus_description' => '10% increased magic damage',
+            'set_bonus_stats' => ['magic_damage' => 0.10],
+        ]);
+
+        ArmorPiece::create([
+            'name' => 'Jungle Shirt',
+            'slot' => 'Body',
+            'defense' => 6,
+            'stat_bonuses' => ['max_mana' => 20, 'magic_damage' => 0.06],
+            'set_family' => 'jungle',
+        ]);
+
+        ArmorPiece::create([
+            'name' => 'Jungle Pants',
+            'slot' => 'Legs',
+            'defense' => 6,
+            'stat_bonuses' => ['max_mana' => 20, 'magic_crit' => 6],
+            'set_family' => 'jungle',
         ]);
     }
 }

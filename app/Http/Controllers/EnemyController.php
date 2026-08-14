@@ -13,7 +13,7 @@ class EnemyController extends Controller
     public function index()
     {
         $enemies = Enemy::all();
-        
+
         return response()->json($enemies);
     }
 

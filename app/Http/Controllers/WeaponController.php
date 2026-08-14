@@ -13,7 +13,7 @@ class WeaponController extends Controller
     public function index()
     {
         $weapons = Weapon::all();
-        
+
         return response()->json($weapons);
     }
 
@@ -38,6 +38,6 @@ class WeaponController extends Controller
 
         Weapon::create($validated);
 
-        return back(); 
+        return back();
     }
 }

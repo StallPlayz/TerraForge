@@ -15,7 +15,7 @@
             </select>
         </div>
 
-        <!-- The Stat Card (Only renders if a weapon is chosen) -->
+        <!-- The Stat Card -->
         <div v-if="selected" class="rounded border border-gray-700 bg-gray-800/50 p-4 shadow-inner">
             <h3 class="mb-3 text-lg font-bold text-teal-300 border-b border-gray-700 pb-1">{{ selected.name }}</h3>
 
